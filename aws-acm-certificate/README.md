@@ -1,7 +1,5 @@
 # AWS ACM Cert
 
-DEPRECATED: Please use [aws-acm-certificate](../aws-acm-certificate) for new code. If possible migrate older code to the new module.
-
 Will create and attempt to validate an certificate in the [AWS ACM service](https://aws.amazon.com/certificate-manager/). This module uses DNS verification so the principal running this needs to be able to write to the supplied Route53 zone.
 
 NOTE: if you intend to use this certificate in a cloudfront distribution it must be created in `us-east-1` region.
@@ -10,7 +8,7 @@ NOTE: if you intend to use this certificate in a cloudfront distribution it must
 
 ```hcl
 module "cert" {
-  source = "github.com/chanzuckerberg/cztack//aws-acm-cert?ref=v0.14.0"
+  source = "github.com/chanzuckerberg/cztack//aws-acm-certificate?ref=v0.24.0"
 
   # the cert domain name
   cert_domain_name = "..."
@@ -19,7 +17,7 @@ module "cert" {
   aws_route53_zone_id = "..."
   
   # a map of alternative : route53_zone_id 
-  cert_subject_alternative_names = "${map(..)}"
+  cert_subject_alternative_names = {...}
 
 
   # variables for tags
@@ -35,10 +33,10 @@ module "cert" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
-| allow\_validation\_record\_overwrite | Allow the overwrite of validation records. This is needed if you are creating certificates in multiple regions. | bool | `true` | no |
+| allow\_validation\_record\_overwrite | Allow the overwrite of validation records. This is needed if you are creating certificates in multiple regions. | bool | `"true"` | no |
 | aws\_route53\_zone\_id |  | string | n/a | yes |
 | cert\_domain\_name | Like www.foo.bar.com or *.foo.bar.com | string | n/a | yes |
-| cert\_subject\_alternative\_names | A map of <alternative_domain:route53_zone_id> | map(string) | `{}` | no |
+| cert\_subject\_alternative\_names | A map of <alternative_domain:route53_zone_id> | map(string) | `<map>` | no |
 | env | Env for tagging and naming. See [doc](../README.md#consistent-tagging). | string | n/a | yes |
 | owner | Owner for tagging and naming. See [doc](../README.md#consistent-tagging). | string | n/a | yes |
 | project | Project for tagging and naming. See [doc](../README.md#consistent-tagging) | string | n/a | yes |
