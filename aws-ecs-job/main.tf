@@ -3,7 +3,7 @@ locals {
 
   container_name = var.container_name == null ? local.name : var.container_name
 
-  task_definition = "${aws_ecs_task_definition.job.family}:${aws_ecs_task_definition.job.revision}"
+  task_definition = "${aws_ecs_task_definition.job.0.family}:${aws_ecs_task_definition.job.0.revision}"
 
   tags = {
     managedBy = "terraform"

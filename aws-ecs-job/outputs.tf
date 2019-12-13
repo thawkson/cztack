@@ -8,5 +8,5 @@ output "ecs_service_arn" {
 
 output "ecs_task_definition_family" {
   description = "The family of the task definition defined for the given/generated container definition."
-  value       = aws_ecs_task_definition.job.family
+  value       = aws_ecs_task_definition.job.0.family
 }
