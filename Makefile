@@ -14,11 +14,17 @@ export AWS_PROFILE=cztack-ci-1
 export AWS_SDK_LOAD_CONFIG=true
 export GOFLAGS=-mod=vendor
 export GO111MODULE=on
+PATH := $(PATH):$(realpath .)/bin
 
 all: clean fmt docs lint test
 
+path:
+	echo $$PATH
+
 setup: ## setup development dependencies
-	curl -L https://raw.githubusercontent.com/chanzuckerberg/bff/master/download.sh | sh
+	curl -sfL https://raw.githubusercontent.com/chanzuckerberg/bff/master/download.sh | sh
+	curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh
+	curl -sfL "$$(curl -Ls https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_$$(go env GOOS)_$$(go env GOARCH).zip")" -o tflint.zip && unzip -qod ./bin tflint.zip && rm tflint.zip
 .PHONY: setup
 
 release: ## run a release
@@ -35,11 +41,13 @@ fmt:
 lint:
 	@for m in $(MODULES); do \
 		terraform fmt -check $$m || exit $$?; \
-	done;
-
-	@for m in $(MODULES); do \
 		ls $$m/*_test.go 2>/dev/null 1>/dev/null || (echo "no test(s) for $$m"; exit $$?); \
-	done
+		pushd $$m; \
+		tflint; \
+		terraform init; \
+		terraform validate .; \
+		popd; \
+	done;
 .PHONY: lint
 
 docs:
