@@ -18,4 +18,9 @@ module "client" {
   role_name         = var.role_name
   iam_path          = var.iam_path
   source_account_id = var.source_account_id
+
+  project = var.project
+  env     = var.env
+  service = var.service
+  owner   = var.owner
 }

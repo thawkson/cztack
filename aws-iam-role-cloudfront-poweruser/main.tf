@@ -1,3 +1,13 @@
+locals {
+  tags = {
+    project   = var.project
+    env       = var.env
+    service   = var.service
+    owner     = var.owner
+    managedBy = "terraform"
+  }
+}
+
 data "aws_iam_policy_document" "assume-role" {
   dynamic "statement" {
     for_each = compact([var.source_account_id])
@@ -32,6 +42,7 @@ data "aws_iam_policy_document" "assume-role" {
 resource "aws_iam_role" "role" {
   name               = var.role_name
   assume_role_policy = data.aws_iam_policy_document.assume-role.json
+  tags               = local.tags
 }
 
 data "aws_iam_policy_document" "s3" {
